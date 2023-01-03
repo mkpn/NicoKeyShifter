@@ -42,8 +42,6 @@ class PlayerFragment : Fragment() {
     private var playbackPosition = 0L
     private var playWhenReady = true
     private var mediaPlayer: ExoPlayer? = null
-    private var currentKey: Double = 0.0
-    private var dataSourceUri: Uri? = null
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
@@ -66,9 +64,18 @@ class PlayerFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.currentKeyValue.collect {
-                    updatePitch(it.toDouble())
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                launch {
+                    viewModel.currentKeyValue.collect {
+                        updatePitch(it.toDouble())
+                    }
+                }
+                launch {
+                    viewModel.videoSourceUrl.collect {
+                        if (mediaPlayer == null && it != null) {
+                            initPlayer(it)
+                        }
+                    }
                 }
             }
         }
@@ -114,14 +121,12 @@ class PlayerFragment : Fragment() {
                 //master.m3u8が含まれるURLにアクセスすればいける
                 url?.let {
                     if (url.contains("master.m3u8")) {
-                        dataSourceUri = Uri.parse(it)
-                        initPlayer(dataSourceUri!!)
+                        viewModel.updateVideoSourceUrl(Uri.parse(it))
                         binding.webView.run {
                             // この辺でwebview消すとニコニコ側がhlsのソース無効化するらしく読み込み完了しないので注意
                             webViewClient = object : WebViewClient() {}
                             webChromeClient = null
                         }
-                        binding.playerOverLay.visibility = View.GONE
                     }
                 }
                 super.onLoadResource(view, url)
@@ -131,13 +136,6 @@ class PlayerFragment : Fragment() {
                 super.onPageFinished(view, url)
                 println("デバッグ on page finished")
             }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (mediaPlayer == null && dataSourceUri != null) {
-            initPlayer(dataSourceUri!!)
         }
     }
 
@@ -164,6 +162,10 @@ class PlayerFragment : Fragment() {
         viewModel.pitchDown()
     }
 
+    private fun updatePitch() {
+        updatePitch(viewModel.currentKeyValue.value.toDouble())
+    }
+
     private fun updatePitch(key: Double) {
         val playbackParams = PlaybackParameters(
             1.0f,
@@ -188,7 +190,6 @@ class PlayerFragment : Fragment() {
 
     private fun initPlayer(url: Uri) {
         val mediaSource = buildMediaSource(url)
-
         mediaPlayer = ExoPlayer.Builder(requireContext()).build().apply {
             addListener(object : Player.Listener {
                 override fun onPlaybackStateChanged(playbackState: Int) {
@@ -196,19 +197,21 @@ class PlayerFragment : Fragment() {
                     when (playbackState) {
                         ExoPlayer.STATE_IDLE -> "STATE_IDLE"
                         ExoPlayer.STATE_BUFFERING -> "STATE_BUFFERING"
-                        ExoPlayer.STATE_READY -> "STATE_READY"
+                        ExoPlayer.STATE_READY -> {
+                            binding.playerOverLay.visibility = View.GONE
+                            updatePitch()
+                        }
                         ExoPlayer.STATE_ENDED -> {
                             // 繰り返し再生させちゃう
                             seekTo(0)
                         }
                         else -> "UNKNOWN"
                     }
-
                 }
             })
             setMediaSource(mediaSource)
+            updatePitch()
             prepare()
-            updatePitch(currentKey)
         }
 
         binding.playerView.player = mediaPlayer

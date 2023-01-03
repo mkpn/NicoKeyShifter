@@ -1,5 +1,6 @@
 package com.nicokeyshifter
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,8 +11,15 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayerViewModel @Inject constructor() : ViewModel() {
 
+    val videoSourceUrl = MutableStateFlow<Uri?>(null)
     val currentKeyValue = MutableStateFlow(0)
     val currentKeyText = MutableStateFlow("Key:±0")
+
+    fun updateVideoSourceUrl(uri: Uri) {
+        viewModelScope.launch {
+            videoSourceUrl.emit(uri)
+        }
+    }
 
     fun pitchUp() {
         viewModelScope.launch {
