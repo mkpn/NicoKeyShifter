@@ -15,11 +15,13 @@ import com.nicokeyshifter.R
 import com.nicokeyshifter.databinding.SearchBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
     private lateinit var binding: SearchBinding
+
     @Inject
     lateinit var apiService: ApiService
     override fun onCreateView(
@@ -34,6 +36,11 @@ class SearchFragment : Fragment() {
                 launch {
                     val response = apiService.search("初音ミク")
                     println("デバッグ response is ${response.body().toString()}")
+                    if (response.isSuccessful) {
+                        response.body()!!.data.forEach {
+                            //　リスト表示
+                        }
+                    }
                 }
             }
         }

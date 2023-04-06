@@ -11,5 +11,6 @@ interface ApiService {
         @Query("targets") targets: String = "title",
         @Query("fields") fields: String = "contentId,title,viewCounter,thumbnailUrl",
         @Query("_sort") sort: String = "-viewCounter",
-    ): Response<SearchResult>
+        @Query("_limit") limit: Int = 100,
+    ): Response<SearchVideoResponse>
 }
