@@ -37,9 +37,8 @@ class SearchFragment : Fragment() {
                     val response = apiService.search("初音ミク")
                     println("デバッグ response is ${response.body().toString()}")
                     if (response.isSuccessful) {
-                        response.body()!!.data.forEach {
-                            //　リスト表示
-                        }
+                        val adapter = VideoAdapter(response.body()!!.data)
+                        binding.recyclerView.adapter = adapter
                     }
                 }
             }
