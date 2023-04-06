@@ -30,6 +30,10 @@ import com.nicokeyshifter.databinding.PlayerBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import javax.inject.Inject
 import kotlin.math.pow
 
 @AndroidEntryPoint
@@ -59,9 +63,9 @@ class PlayerFragment : Fragment() {
 
         loadVideoInWebView()
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            ApiRequestService().getMusicRanking()
-        }
+//        lifecycleScope.launch(Dispatchers.IO) {
+//            ApiRequestService().getMusicRanking()
+//
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
@@ -94,7 +98,7 @@ class PlayerFragment : Fragment() {
 
     private fun loadVideoInWebView() {
         val html =
-            "<html><body><script type=\"application/javascript\" src=\"https://embed.nicovideo.jp/watch/sm41403930/script?w=320&h=180\"></script></body></html>"
+            "<html><body><script type=\"application/javascript\" src=\"https://embed.nicovideo.jp/watch/sm41673586/script?w=320&h=180\"></script></body></html>"
         val encodedHtml = Base64.encodeToString(html.toByteArray(), Base64.NO_PADDING)
         binding.webView.loadData(encodedHtml, "text/html", "base64")
     }
