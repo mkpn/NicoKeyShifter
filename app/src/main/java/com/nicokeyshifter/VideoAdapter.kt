@@ -8,10 +8,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class VideoAdapter(private val videos: List<Video>) : RecyclerView.Adapter<VideoAdapter.VideoViewHolder>() {
+class VideoAdapter(private val videos: List<Video>, private val onClick: () -> Unit) :
+    RecyclerView.Adapter<VideoAdapter.VideoViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_video, parent, false)
-        return VideoViewHolder(view)
+        return VideoViewHolder(view, onClick)
     }
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
@@ -27,9 +28,17 @@ class VideoAdapter(private val videos: List<Video>) : RecyclerView.Adapter<Video
         return videos.size
     }
 
-    inner class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class VideoViewHolder(itemView: View, private val onClick: () -> Unit) :
+        RecyclerView.ViewHolder(itemView) {
         val thumbnailImageView: ImageView = itemView.findViewById(R.id.thumbnail_image_view)
         val titleTextView: TextView = itemView.findViewById(R.id.title_text_view)
         val viewCounterTextView: TextView = itemView.findViewById(R.id.view_counter_text_view)
+        private val container: View = itemView.findViewById(R.id.container)
+
+        init {
+            container.setOnClickListener {
+                onClick()
+            }
+        }
     }
 }
