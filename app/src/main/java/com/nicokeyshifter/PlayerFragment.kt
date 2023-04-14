@@ -18,6 +18,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.navArgs
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackParameters
@@ -38,7 +39,7 @@ import kotlin.math.pow
 
 @AndroidEntryPoint
 class PlayerFragment : Fragment() {
-
+    val args: PlayerFragmentArgs by navArgs()
     private lateinit var binding: PlayerBinding
     private val viewModel: PlayerViewModel by viewModels()
 
@@ -58,10 +59,8 @@ class PlayerFragment : Fragment() {
         binding.vm = viewModel
 
         initWebViewSettings()
-
         initWebViewClient()
-
-        loadVideoInWebView()
+        loadVideoInWebView(args.contentId!!)
 
 //        lifecycleScope.launch(Dispatchers.IO) {
 //            ApiRequestService().getMusicRanking()
@@ -96,9 +95,9 @@ class PlayerFragment : Fragment() {
         return binding.root
     }
 
-    private fun loadVideoInWebView() {
+    private fun loadVideoInWebView(contentId: String) {
         val html =
-            "<html><body><script type=\"application/javascript\" src=\"https://embed.nicovideo.jp/watch/sm41673586/script?w=320&h=180\"></script></body></html>"
+            "<html><body><script type=\"application/javascript\" src=\"https://embed.nicovideo.jp/watch/$contentId/script?w=320&h=180\"></script></body></html>"
         val encodedHtml = Base64.encodeToString(html.toByteArray(), Base64.NO_PADDING)
         binding.webView.loadData(encodedHtml, "text/html", "base64")
     }
