@@ -36,7 +36,7 @@ class SearchFragment : Fragment() {
                         val response = apiService.search(binding.searchText.text.toString())
                         if (response.isSuccessful) {
                             val adapter = VideoAdapter(response.body()!!.data) {
-                                sendSearchAction()
+                                sendSearchAction(it)
                             }
                             binding.recyclerView.adapter = adapter
                         }
@@ -45,20 +45,11 @@ class SearchFragment : Fragment() {
             }
         }
 
-//        binding.executeSearch.setOnClickListener {
-//            sendSearchAction()
-//        }
-        binding.searchText.setOnEditorActionListener { textView, i, keyEvent ->
-            if (i == EditorInfo.IME_ACTION_SEARCH && textView.text.isNotEmpty()) {
-                sendSearchAction()
-                return@setOnEditorActionListener true
-            }
-            false
-        }
         return binding.root
     }
 
-    private fun sendSearchAction() {
-        findNavController().navigate(R.id.actionSearch)
+    private fun sendSearchAction(videoId: String) {
+        val action = SearchFragmentDirections.actionSearch(videoId)
+        findNavController().navigate(action)
     }
 }

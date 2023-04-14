@@ -7,8 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import kotlin.properties.Delegates
 
-class VideoAdapter(private val videos: List<Video>, private val onClick: () -> Unit) :
+class VideoAdapter(private val videos: List<Video>, private val onClick: (String) -> Unit) :
     RecyclerView.Adapter<VideoAdapter.VideoViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_video, parent, false)
@@ -17,6 +18,7 @@ class VideoAdapter(private val videos: List<Video>, private val onClick: () -> U
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
         val video = videos[position]
+        holder.contentId = video.contentId
         holder.titleTextView.text = video.title
         holder.viewCounterTextView.text = "Views: ${video.viewCounter}"
         Glide.with(holder.itemView)
@@ -28,16 +30,17 @@ class VideoAdapter(private val videos: List<Video>, private val onClick: () -> U
         return videos.size
     }
 
-    inner class VideoViewHolder(itemView: View, private val onClick: () -> Unit) :
+    inner class VideoViewHolder(itemView: View, private val onClick: (String) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
         val thumbnailImageView: ImageView = itemView.findViewById(R.id.thumbnail_image_view)
         val titleTextView: TextView = itemView.findViewById(R.id.title_text_view)
         val viewCounterTextView: TextView = itemView.findViewById(R.id.view_counter_text_view)
         private val container: View = itemView.findViewById(R.id.container)
+        lateinit var contentId : String
 
         init {
             container.setOnClickListener {
-                onClick()
+                onClick(contentId)
             }
         }
     }

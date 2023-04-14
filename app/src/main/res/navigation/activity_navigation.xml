@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_navigation"
+    android:id="@+id/main_nav"
     app:startDestination="@id/searchFragment">
 
     <fragment
@@ -11,14 +11,19 @@
 
         <action
             android:id="@+id/actionSearch"
-            app:destination="@id/contentDetailFragment" />
+            app:destination="@id/playerFragment" />
 
     </fragment>
 
     <fragment
-        android:id="@+id/contentDetailFragment"
+        android:id="@+id/playerFragment"
         android:name="com.nicokeyshifter.PlayerFragment"
-        android:label="ContentDetailFragment">
+        android:label="PlayerFragment">
+        <argument
+            android:name="contentId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
 </navigation>
