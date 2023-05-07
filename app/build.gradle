@@ -39,6 +39,8 @@ android {
 }
 
 dependencies {
+    // multi modules
+    implementation project(":data:api")
 
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
