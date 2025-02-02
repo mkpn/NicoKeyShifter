@@ -26,15 +26,9 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSource
-import com.nicokeyshifter.R
 import com.nicokeyshifter.databinding.PlayerBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import javax.inject.Inject
 import kotlin.math.pow
 
 @AndroidEntryPoint
@@ -74,7 +68,7 @@ class PlayerFragment : Fragment() {
                     }
                 }
                 launch {
-                    viewModel.videoSourceUrl.collect {
+                    viewModel.audioSourceUrl.collect {
                         if (mediaPlayer == null && it != null) {
                             initPlayer(it)
                         }
@@ -123,8 +117,9 @@ class PlayerFragment : Fragment() {
             override fun onLoadResource(view: WebView?, url: String?) {
                 //master.m3u8が含まれるURLにアクセスすればいける
                 url?.let {
-                    if (url.contains("master.m3u8")) {
-                        viewModel.updateVideoSourceUrl(Uri.parse(it))
+                    println("デバッグ on load resource $it")
+                    if (url.contains("audio-aac") && url.contains(".m3u8")) {
+                        viewModel.updateAudioSourceUrl(Uri.parse(it))
                         binding.webView.run {
                             // この辺でwebview消すとニコニコ側がhlsのソース無効化するらしく読み込み完了しないので注意
                             webViewClient = object : WebViewClient() {}
