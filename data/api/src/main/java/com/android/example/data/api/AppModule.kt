@@ -1,4 +1,4 @@
-package com.nicokeyshifter
+package com.android.example.data.api
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -34,7 +34,7 @@ object AppModule {
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.search.nicovideo.jp/api/v2/snapshot/")
+            .baseUrl("https://snapshot.search.nicovideo.jp/api/v2/snapshot/")
             .client(okHttpClientBuilder.build())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

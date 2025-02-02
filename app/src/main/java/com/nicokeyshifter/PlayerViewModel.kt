@@ -11,13 +11,13 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayerViewModel @Inject constructor() : ViewModel() {
 
-    val videoSourceUrl = MutableStateFlow<Uri?>(null)
+    val audioSourceUrl = MutableStateFlow<Uri?>(null)
     val currentKeyValue = MutableStateFlow(0)
     val currentKeyText = MutableStateFlow("Key:±0")
 
-    fun updateVideoSourceUrl(uri: Uri) {
+    fun updateAudioSourceUrl(uri: Uri) {
         viewModelScope.launch {
-            videoSourceUrl.emit(uri)
+            audioSourceUrl.emit(uri)
         }
     }
 

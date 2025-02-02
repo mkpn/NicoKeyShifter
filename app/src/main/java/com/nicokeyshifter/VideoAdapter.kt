@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.android.example.data.api.Video
 import com.bumptech.glide.Glide
-import kotlin.properties.Delegates
 
 class VideoAdapter(private val videos: List<Video>, private val onClick: (String) -> Unit) :
     RecyclerView.Adapter<VideoAdapter.VideoViewHolder>() {
